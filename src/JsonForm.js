@@ -207,7 +207,7 @@ function JsonForm() {
                         style={componentStyles.jsonOutput}
                     />
                     {error && <div style={{ color: 'red' }}>Invalid JSON: {error}</div>}
-                    <h3>Approved Keys</h3>
+                    <h3>Visible Keys</h3>
                     <select
                         multiple
                         value={approvedKeys}
