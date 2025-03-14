@@ -110,12 +110,26 @@ function JsonForm() {
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                 .join(' ');
         };
-
+    
         const fields = Object.entries(data).reduce((acc, [key, value]) => {
             const currentPath = [...keyPath, key];
+            
             if (isPathApproved(currentPath)) {
                 acc.push([key, value]);
+                return acc;
             }
+
+            if (typeof value === 'object' && value !== null) {
+                const hasApprovedFields = Object.keys(value).some(childKey => 
+                    isPathApproved([...currentPath, childKey]) || 
+                    (typeof value[childKey] === 'object' && value[childKey] !== null)
+                );
+                
+                if (hasApprovedFields) {
+                    acc.push([key, value]);
+                }
+            }
+            
             return acc;
         }, []);
     
@@ -123,8 +137,22 @@ function JsonForm() {
             const currentPath = [...path, key];
             const currentPathString = currentPath.join('.');
             const displayKey = formatKeyName(key);
-    
+        
             if (Array.isArray(value)) {
+                const hasApprovedFields = value.some((item, index) => {
+                    if (typeof item === 'object' && item !== null) {
+                        return Object.keys(item).some(childKey => 
+                            isPathApproved([...currentPath, index, childKey]) || 
+                            (typeof item[childKey] === 'object' && item[childKey] !== null)
+                        );
+                    }
+                    return isPathApproved([...currentPath, index]);
+                });
+        
+                if (!hasApprovedFields) {
+                    return null;
+                }
+        
                 return (
                     <div key={currentPathString} style={componentStyles.arrayContainer}>
                         <div style={componentStyles.arrayHeader}>
