@@ -1,0 +1,25 @@
+{
+    "id": 1,
+    "name": "Product A",
+    "category": "Electronics",
+    "price": 199.99,
+    "description": "A high-quality electronic device.",
+    "inventory": 100,
+    "attributes": {
+        "color": "Black",
+        "size": "Medium",
+        "weight": "1.5kg"
+    },
+    "reviews": [
+        {
+            "user": "user123",
+            "rating": 4,
+            "comment": "Great product, works well."
+        },
+        {
+            "user": "testUser",
+            "rating": 5,
+            "comment": "Excellent quality and fast delivery."
+        }
+    ]
+}
