@@ -8,12 +8,14 @@ export const Container = styled.div`
     
     @media (max-width: 768px) {
         flex-direction: column;
+        gap: 1rem;
     }
 `;
 
 export const FormSection = styled.div`
     flex: 1;
     min-width: 400px;
+    max-width: 600px;
     
     @media (max-width: 768px) {
         min-width: 100%;
