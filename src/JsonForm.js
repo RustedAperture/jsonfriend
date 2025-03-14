@@ -14,16 +14,19 @@ function JsonForm() {
     const extractPaths = useCallback((obj, parentPath = '') => {
         const paths = ['*'];
         
-        Object.entries(obj).forEach(([key, value]) => {
-            const currentPath = parentPath ? `${parentPath}.${key}` : key;
-            paths.push(currentPath);
-            
-            if (value && typeof value === 'object' && !Array.isArray(value)) {
-                paths.push(...extractPaths(value, currentPath).filter(path => path !== '*'));
-            }
-        });
+        const traverse = (obj, path) => {
+            Object.entries(obj).forEach(([key, value]) => {
+                const currentPath = path ? `${path}.${key}` : key;
+                paths.push(currentPath);
+                
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    traverse(value, currentPath);
+                }
+            });
+        };
         
-        return paths;
+        traverse(obj, parentPath);
+        return paths.filter((path, index) => paths.indexOf(path) === index);
     }, []);
 
     useEffect(() => {
@@ -96,11 +99,12 @@ function JsonForm() {
     const isPathApproved = (path) => {
         if (approvedKeys.includes('*')) return true;
         const pathString = path.join('.');
-        return approvedKeys.some(approvedKey => 
-            pathString === approvedKey || 
-            approvedKey === path[0] ||
-            pathString.startsWith(approvedKey + '.')
-        );
+        return approvedKeys.some(approvedKey => {
+            if (pathString === approvedKey) return true;
+            if (approvedKey.startsWith(pathString + '.')) return true;
+            if (pathString.startsWith(approvedKey + '.')) return true;
+            return false;
+        });
     };
 
     const renderFields = (data, keyPath = [], isRoot = true) => {
@@ -111,6 +115,23 @@ function JsonForm() {
                 .join(' ');
         };
     
+        
+        const hasDirectlyApprovedChildren = (obj, objPath) => {
+            const traverse = (value, path) => {
+                if (typeof value !== 'object' || value === null) {
+                    return isPathApproved(path);
+                }
+
+                return Object.entries(value).some(([key, val]) => {
+                    const newPath = [...path, key];
+                    if (isPathApproved(newPath)) return true;
+                    return traverse(val, newPath);
+                });
+            };
+
+            return traverse(obj, objPath);
+        };
+        
         const fields = Object.entries(data).reduce((acc, [key, value]) => {
             const currentPath = [...keyPath, key];
             
@@ -118,12 +139,17 @@ function JsonForm() {
                 acc.push([key, value]);
                 return acc;
             }
-
+        
             if (typeof value === 'object' && value !== null) {
-                const hasApprovedFields = Object.keys(value).some(childKey => 
-                    isPathApproved([...currentPath, childKey]) || 
-                    (typeof value[childKey] === 'object' && value[childKey] !== null)
-                );
+                // Check both direct children and nested paths
+                const hasApprovedFields = Object.keys(value).some(childKey => {
+                    const childPath = [...currentPath, childKey];
+                    const childValue = value[childKey];
+                    
+                    return isPathApproved(childPath) || 
+                           (typeof childValue === 'object' && childValue !== null && 
+                            hasDirectlyApprovedChildren(childValue, childPath));
+                });
                 
                 if (hasApprovedFields) {
                     acc.push([key, value]);
@@ -141,10 +167,7 @@ function JsonForm() {
             if (Array.isArray(value)) {
                 const hasApprovedFields = value.some((item, index) => {
                     if (typeof item === 'object' && item !== null) {
-                        return Object.keys(item).some(childKey => 
-                            isPathApproved([...currentPath, index, childKey]) || 
-                            (typeof item[childKey] === 'object' && item[childKey] !== null)
-                        );
+                        return hasDirectlyApprovedChildren(item, [...currentPath, index]);
                     }
                     return isPathApproved([...currentPath, index]);
                 });
@@ -173,11 +196,8 @@ function JsonForm() {
             }
     
             if (typeof value === 'object' && value !== null) {
-                const hasApprovedFields = Object.keys(value).some(childKey => 
-                    isPathApproved([...currentPath, childKey]) || 
-                    (typeof value[childKey] === 'object' && value[childKey] !== null)
-                );
-    
+                const hasApprovedFields = hasDirectlyApprovedChildren(value, currentPath);
+        
                 if (hasApprovedFields) {
                     return (
                         <div key={currentPathString} style={componentStyles.section}>
