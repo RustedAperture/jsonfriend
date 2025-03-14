@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { componentStyles } from './styles/JsonFormStyles';
+import { Container, FormSection, JsonSection } from './styles/StyledComponents';
 import JsonFormField from './components/JsonFormField';
 
 function JsonForm() {
@@ -192,13 +193,13 @@ function JsonForm() {
         <div>
             <h2>JSON Form Editor</h2>
             <hr />
-            <div style={componentStyles.container}>
-                <div style={componentStyles.formSection}>
+            <Container>
+                <FormSection>
                     <h3>JSON Fields</h3>
                     {renderFields(jsonData)}
                     
-                </div>
-                <div style={componentStyles.jsonSection}>
+                </FormSection>
+                <JsonSection>
                     <h3>JSON Input/Output</h3>
                     <textarea
                         className="json-output"
@@ -223,8 +224,8 @@ function JsonForm() {
                     <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
                         Hold Ctrl (Cmd on Mac) to select multiple keys
                     </div>
-                </div>
-            </div>
+                </JsonSection>
+            </Container>
         </div>
     );
 }

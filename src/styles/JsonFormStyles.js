@@ -1,22 +1,4 @@
 export const componentStyles = {
-    container: {
-        display: 'flex',
-        gap: '2rem',
-        alignItems: 'stretch',
-        minHeight: '100vh'
-    },
-    formSection: {
-        flex: '1',
-        minWidth: '400px'
-    },
-    jsonSection: {
-        flex: '1',
-        position: 'sticky',
-        top: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 40px)' 
-    },
     row: {
         display: 'flex',
         alignItems: 'center',
