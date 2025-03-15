@@ -59,7 +59,7 @@ function JsonForm() {
             return newValue === '' ? 0 : Number(newValue);
         }
         if (typeof originalValue === 'boolean') {
-            return newValue.toLowerCase() === 'true';
+            return typeof newValue === 'boolean' ? newValue : newValue === 'true';
         }
         return newValue;
     };

@@ -1,5 +1,7 @@
 {
     "id": 1,
+    "active": true,
+    "visible": false,
     "name": "Product A",
     "category": "Electronics",
     "price": 199.99,
