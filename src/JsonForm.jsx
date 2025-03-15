@@ -28,7 +28,7 @@ function JsonForm() {
     }, []);
 
     useEffect(() => {
-        fetch('/data.json')
+        fetch(import.meta.env.BASE_URL + 'data.json')
             .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch'))
             .then(data => {
                 setJsonData(data);
