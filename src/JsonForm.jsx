@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { componentStyles } from './styles/JsonFormStyles';
-import { Container, FormSection, JsonSection } from './styles/StyledComponents';
-import JsonFormField from './components/JsonFormField';
+import { componentStyles } from './componentStyles/JsonFormStyles';
+import { Container, FormSection, JsonSection } from './componentStyles/StyledComponents';
+import JsonFormField from './components/JsonFormField.jsx';
 
 function JsonForm() {
     const [jsonData, setJsonData] = useState({});
@@ -30,7 +30,7 @@ function JsonForm() {
     }, []);
 
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + '/data.json')
+        fetch('/data.json')
             .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch'))
             .then(data => {
                 setJsonData(data);
@@ -177,16 +177,16 @@ function JsonForm() {
                 }
         
                 return (
-                    <div key={currentPathString} style={componentStyles.arrayContainer}>
-                        <div style={componentStyles.arrayHeader}>
+                    <div key={currentPathString}>
+                        <div>
                             {displayKey}
                         </div>
                         {value.map((item, index) => (
-                            <div key={`${currentPathString}-${index}`} style={componentStyles.nested}>
-                                <div style={componentStyles.arrayHeader}>
+                            <div key={`${currentPathString}-${index}`}>
+                                <div>
                                     Item {index + 1}
                                 </div>
-                                <div style={{ width: '100%' }}>
+                                <div>
                                     {renderFields(item, [...currentPath, index], false)}
                                 </div>
                             </div>
@@ -200,8 +200,8 @@ function JsonForm() {
         
                 if (hasApprovedFields) {
                     return (
-                        <div key={currentPathString} style={componentStyles.section}>
-                            <div style={{ ...componentStyles.row, fontWeight: 'bold' }}>
+                        <div key={currentPathString}>
+                            <div>
                                 {displayKey}
                             </div>
                             {renderFields(value, currentPath, false)}
@@ -219,7 +219,6 @@ function JsonForm() {
                         value={value}
                         label={displayKey}
                         onChange={handleInputChange}
-                        styles={componentStyles}
                     />
                 );
             }
@@ -253,15 +252,13 @@ function JsonForm() {
                         className="json-output"
                         value={rawJson}
                         onChange={handleJsonChange}
-                        style={componentStyles.jsonOutput}
                     />
-                    {error && <div style={{ color: 'red' }}>Invalid JSON: {error}</div>}
+                    {error && <div>Invalid JSON: {error}</div>}
                     <h3>Visible Keys</h3>
                     <select
                         multiple
                         value={approvedKeys}
                         onChange={handleApprovedKeysChange}
-                        style={componentStyles.keyApproval}
                     >
                         {availablePaths.map((path) => (
                             <option key={path} value={path}>
@@ -269,7 +266,7 @@ function JsonForm() {
                             </option>
                         ))}
                     </select>
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                    <div>
                         Hold Ctrl (Cmd on Mac) to select multiple keys
                     </div>
                 </JsonSection>

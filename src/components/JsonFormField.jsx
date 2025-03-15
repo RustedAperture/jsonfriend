@@ -17,10 +17,9 @@ const JsonFormField = ({
     };
 
     return (
-        <div className='row' style={styles.row}>
+        <div className='row'>
             <label 
                 htmlFor={currentPathString} 
-                style={styles.label}
             >
                 {label}:
             </label>
@@ -30,7 +29,6 @@ const JsonFormField = ({
                     id={currentPathString}
                     checked={value}
                     onChange={handleChange}
-                    style={{ ...styles.input, width: '20px' }}
                 />
             ) : (
                 <input
@@ -38,7 +36,6 @@ const JsonFormField = ({
                     id={currentPathString}
                     value={formatValue(value, inputType)}
                     onChange={handleChange}
-                    style={styles.input}
                     step={inputType === 'number' ? 'any' : undefined}
                 />
             )}

@@ -1,6 +1,6 @@
 import logo from './logo.svg';
-import './App.css';
-import JsonForm from './JsonForm.js';
+import './scss/app.scss';
+import JsonForm from './JsonForm.jsx';
 
 function App() {
   return (
