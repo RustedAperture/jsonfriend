@@ -17,9 +17,10 @@ const JsonFormField = ({
     };
 
     return (
-        <div className='row'>
+        <div className='flex items-center'>
             <label 
-                htmlFor={currentPathString} 
+                htmlFor={currentPathString}
+                className='mr-auto'
             >
                 {label}:
             </label>
@@ -29,6 +30,7 @@ const JsonFormField = ({
                     id={currentPathString}
                     checked={value}
                     onChange={handleChange}
+                    className='rounded-md'
                 />
             ) : (
                 <input
@@ -37,6 +39,7 @@ const JsonFormField = ({
                     value={formatValue(value, inputType)}
                     onChange={handleChange}
                     step={inputType === 'number' ? 'any' : undefined}
+                    className='rounded-sm'
                 />
             )}
         </div>

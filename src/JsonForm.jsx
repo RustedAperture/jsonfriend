@@ -176,15 +176,15 @@ function JsonForm() {
         
                 return (
                     <div key={currentPathString}>
-                        <div>
+                        <h4>
                             {displayKey}
-                        </div>
+                        </h4>
                         {value.map((item, index) => (
                             <div key={`${currentPathString}-${index}`}>
-                                <div>
+                                <h4>
                                     Item {index + 1}
-                                </div>
-                                <div>
+                                </h4>
+                                <div className='flex flex-col gap-1'>
                                     {renderFields(item, [...currentPath, index], false)}
                                 </div>
                             </div>
@@ -198,10 +198,10 @@ function JsonForm() {
         
                 if (hasApprovedFields) {
                     return (
-                        <div key={currentPathString}>
-                            <div>
+                        <div key={currentPathString} className='flex flex-col gap-1'>
+                            <h4>
                                 {displayKey}
-                            </div>
+                            </h4>
                             {renderFields(value, currentPath, false)}
                         </div>
                     );
@@ -237,19 +237,20 @@ function JsonForm() {
     return (
         <div>
             <h2>JSON Form Editor</h2>
-            <hr />
-            <div>
-                <div>
+            <hr className='not-prose'/>
+            <div className='flex flex-wrap gap-4'>
+                <div className='basis-lg flex flex-col gap-1'>
                     <h3>JSON Fields</h3>
                     {renderFields(jsonData)}
                     
                 </div>
-                <div>
+                <div className='grow flex flex-col gap-1'>
                     <h3>JSON Input/Output</h3>
                     <textarea
-                        className="json-output"
+                        className="json-output w-full rounded-sm"
                         value={rawJson}
                         onChange={handleJsonChange}
+                        wrap='off'
                     />
                     {error && <div>Invalid JSON: {error}</div>}
                     <h3>Visible Keys</h3>
@@ -257,6 +258,7 @@ function JsonForm() {
                         multiple
                         value={approvedKeys}
                         onChange={handleApprovedKeysChange}
+                        className='w-full rounded-sm'
                     >
                         {availablePaths.map((path) => (
                             <option key={path} value={path}>
