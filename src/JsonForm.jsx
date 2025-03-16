@@ -13,14 +13,25 @@ function JsonForm() {
         const paths = ['*'];
         
         const traverse = (obj, path) => {
-            Object.entries(obj).forEach(([key, value]) => {
-                const currentPath = path ? `${path}.${key}` : key;
-                paths.push(currentPath);
-                
-                if (value && typeof value === 'object' && !Array.isArray(value)) {
-                    traverse(value, currentPath);
-                }
-            });
+            if (Array.isArray(obj)) {
+                obj.forEach((item, index) => {
+                    const currentPath = path ? `${path}.${index}` : `${index}`;
+                    paths.push(currentPath);
+                    
+                    if (item && typeof item === 'object') {
+                        traverse(item, currentPath);
+                    }
+                });
+            } else {
+                Object.entries(obj).forEach(([key, value]) => {
+                    const currentPath = path ? `${path}.${key}` : key;
+                    paths.push(currentPath);
+                    
+                    if (value && typeof value === 'object') {
+                        traverse(value, currentPath);
+                    }
+                });
+            }
         };
         
         traverse(obj, parentPath);
@@ -175,21 +186,29 @@ function JsonForm() {
                 }
         
                 return (
-                    <div key={currentPathString}>
+                    <>
                         <h4>
                             {displayKey}
                         </h4>
-                        {value.map((item, index) => (
-                            <div key={`${currentPathString}-${index}`}>
-                                <h4>
-                                    Item {index + 1}
-                                </h4>
-                                <div className='flex flex-col gap-1'>
-                                    {renderFields(item, [...currentPath, index], false)}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                        {value.map((item, index) => {
+                            const itemPath = [...currentPath, index];
+                            // Only render if the specific index is approved or has approved children
+                            if (isPathApproved(itemPath) || 
+                                (typeof item === 'object' && item !== null && hasDirectlyApprovedChildren(item, itemPath))) {
+                                return (
+                                    <>
+                                        <h4>
+                                            Item {index + 1}
+                                        </h4>
+                                        <div className='flex flex-col gap-1'>
+                                            {renderFields(item, itemPath, false)}
+                                        </div>
+                                    </>
+                                );
+                            }
+                            return null;
+                        })}
+                    </>
                 );
             }
     
@@ -198,12 +217,12 @@ function JsonForm() {
         
                 if (hasApprovedFields) {
                     return (
-                        <div key={currentPathString} className='flex flex-col gap-1'>
+                        <>
                             <h4>
                                 {displayKey}
                             </h4>
                             {renderFields(value, currentPath, false)}
-                        </div>
+                        </>
                     );
                 }
                 return null;
@@ -237,7 +256,7 @@ function JsonForm() {
     return (
         <div>
             <h2>JSON Form Editor</h2>
-            <hr className='not-prose'/>
+            <hr className='not-prose text-gray-400'/>
             <div className='flex flex-wrap gap-4'>
                 <div className='basis-lg flex flex-col gap-1'>
                     <h3>JSON Fields</h3>
@@ -247,26 +266,26 @@ function JsonForm() {
                 <div className='grow flex flex-col gap-1'>
                     <h3>JSON Input/Output</h3>
                     <textarea
-                        className="json-output w-full rounded-sm"
+                        className="json-output w-full rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500"
                         value={rawJson}
                         onChange={handleJsonChange}
                         wrap='off'
                     />
-                    {error && <div>Invalid JSON: {error}</div>}
+                    {error && <div className='text-sm text-red-400'>Invalid JSON: {error}</div>}
                     <h3>Visible Keys</h3>
                     <select
                         multiple
                         value={approvedKeys}
                         onChange={handleApprovedKeysChange}
-                        className='w-full rounded-sm'
+                        className='p-2 w-full grow rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500'
                     >
                         {availablePaths.map((path) => (
-                            <option key={path} value={path}>
+                            <option className='px-2 py-1' key={path} value={path}>
                                 {path}
                             </option>
                         ))}
                     </select>
-                    <div>
+                    <div className='text-sm text-gray-500'>
                         Hold Ctrl (Cmd on Mac) to select multiple keys
                     </div>
                 </div>

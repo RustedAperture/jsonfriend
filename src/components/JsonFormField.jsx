@@ -30,7 +30,7 @@ const JsonFormField = ({
                     id={currentPathString}
                     checked={value}
                     onChange={handleChange}
-                    className='rounded-md'
+                    className='rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500'
                 />
             ) : (
                 <input
@@ -39,7 +39,7 @@ const JsonFormField = ({
                     value={formatValue(value, inputType)}
                     onChange={handleChange}
                     step={inputType === 'number' ? 'any' : undefined}
-                    className='rounded-sm'
+                    className='rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500'
                 />
             )}
         </div>
