@@ -30,7 +30,7 @@ const JsonFormField = ({
                     id={currentPathString}
                     checked={value}
                     onChange={handleChange}
-                    className='rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500'
+                    className='w-7 h-7 rounded-sm border-2 border-gray-300 focus:ring-gray-500 focus:border-gray-500'
                 />
             ) : (
                 <input

@@ -1,31 +1,94 @@
 {
-    "id": 1,
-    "active": true,
-    "visible": false,
-    "name": "Product A",
-    "category": "Electronics",
-    "price": 199.99,
-    "description": "A high-quality electronic device.",
-    "inventory": 100,
-    "attributes": {
-        "color": "Black",
-        "size": "Medium",
-        "weight": "1.5kg",
-        "alternative": {
-            "color": "White",
-            "size": "Large"
-        }
-    },
-    "reviews": [
-        {
-            "user": "user123",
-            "rating": 4,
-            "comment": "Great product, works well."
+    "project": {
+      "name": "Data Analysis Pipeline",
+      "version": "1.2.0",
+      "environment": {
+        "development": {
+          "database": {
+            "host": "dev-db.example.com",
+            "port": 5432,
+            "user": "dev_user",
+            "password": "dev_password"
+          },
+          "api": {
+            "url": "http://dev-api.example.com/v1",
+            "timeout": 10
+          },
+          "features": {
+            "debug_mode": true,
+            "logging_level": "DEBUG"
+          }
         },
-        {
-            "user": "testUser",
-            "rating": 5,
-            "comment": "Excellent quality and fast delivery."
+        "production": {
+          "database": {
+            "host": "prod-db.example.com",
+            "port": 5432,
+            "user": "prod_user",
+            "password": "prod_password"
+          },
+          "api": {
+            "url": "https://api.example.com/v1",
+            "timeout": 30
+          },
+          "features": {
+            "debug_mode": false,
+            "logging_level": "INFO"
+          }
         }
-    ]
-}
+      },
+      "data_sources": {
+        "csv": {
+          "input_path": "/data/input.csv",
+          "output_path": "/data/processed.csv",
+          "options": {
+            "delimiter": ",",
+            "header": true,
+            "quotechar": "\""
+          }
+        },
+        "api": {
+          "endpoint": "/reports",
+          "parameters": {
+            "start_date": "2023-01-01",
+            "end_date": "2023-12-31"
+          }
+        }
+      },
+      "processing": {
+        "steps": [
+          {
+            "name": "Clean Data",
+            "module": "data_cleaner",
+            "config": {
+              "remove_duplicates": true,
+              "fill_missing_values": {
+                "method": "mean",
+                "columns": [
+                  "age",
+                  "income"
+                ]
+              }
+            }
+          },
+          {
+            "name": "Transform Data",
+            "module": "data_transformer",
+            "config": {
+              "feature_engineering": [
+                "age_squared",
+                "log_income"
+              ]
+            }
+          },
+          {
+            "name": "Generate Report",
+            "module": "report_generator",
+            "config": {
+              "output_format": "pdf",
+              "template": "report_template.html"
+            }
+          }
+        ]
+      }
+    }
+  }
